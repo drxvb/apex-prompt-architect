@@ -14,8 +14,47 @@ Usage:
 
 import argparse
 import re
+import sys
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Tuple
+
+# Ensure utf-8 output on Windows (cp1252 default chokes on ✅ / ❌).
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
+
+# Credential patterns — used by detect_credentials() to enforce the
+# "refuse processing on credentials" safety rule from references/07.
+# Each entry: (pattern, human-readable label).
+CREDENTIAL_PATTERNS: List[Tuple[re.Pattern, str]] = [
+    (re.compile(r"sk-(ant-)?[A-Za-z0-9_-]{20,}"), "OpenAI/Anthropic-style API key"),
+    (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS access key ID"),
+    (re.compile(r"\bASIA[0-9A-Z]{16}\b"), "AWS temporary access key"),
+    (re.compile(r"ghp_[A-Za-z0-9]{30,}"), "GitHub personal access token"),
+    (re.compile(r"gho_[A-Za-z0-9]{30,}"), "GitHub OAuth token"),
+    (re.compile(r"github_pat_[A-Za-z0-9_]{60,}"), "GitHub fine-grained PAT"),
+    (re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"), "Slack token"),
+    (re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{20,}"), "Bearer token"),
+    (re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"), "JWT"),
+    (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"), "PEM private key"),
+    (re.compile(r"(?i)(?:password|passwd|secret|api[_-]?key)\s*[:=]\s*['\"]?[^\s'\"]{6,}"),
+     "embedded password/secret/api_key assignment"),
+]
+
+
+def detect_credentials(text: str) -> List[str]:
+    """Return a list of human-readable labels for credential patterns found in text.
+
+    Empty list means clean. Used by apex_workflow.py to gate the 4D pipeline:
+    if credentials are detected, the workflow refuses and tells the user
+    what to remove — without echoing the credential value itself.
+    """
+    found: List[str] = []
+    for pattern, label in CREDENTIAL_PATTERNS:
+        if pattern.search(text):
+            found.append(label)
+    return found
 
 
 # Heuristic markers — each check returns pass / warn / fail.

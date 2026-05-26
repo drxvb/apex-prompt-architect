@@ -19,7 +19,7 @@ Do not use dialectal Arabic in prompts targeting Claude/Kimi/MiniMax — coverag
 | Form | Example | When to use |
 |---|---|---|
 | Implicit (Modal) | `حلِّل النص` (analyze the text) | Default — most prompts |
-| Polite imperative | `يُرجى تحليل النص` (please analyze) | When a user-facing tool will read the output |
+| Polite imperative | `يُرجى تحليل النص` (please analyze) | **Avoid in prompts that address the model.** Use only inside the OUTPUT the model produces for end-users — `يُرجى` is the form humans use to address other humans politely. |
 | Direct second-person | `أنت محلِّل…` (you are an analyst…) | Role-assignment line |
 
 ## Output-format conventions
@@ -45,16 +45,18 @@ Borrow from the [arabic-ai-text-humanizer](https://github.com/drxvb/arabic-ai-te
 
 If the rough prompt is itself a translated-English text, it often contains calques that read mechanically. Common ones the skill rewrites:
 
-| Calque (AI default) | Natural Arabic |
-|---|---|
-| `خط أنابيب` (pipeline-literal) | `مسار عمل` (workflow) |
-| `نظام متعدد العملاء` (multi-customer) | `نظام متعدد الوكلاء` (multi-agent) |
-| `نافذة المحتوى` (content window) | `نافذة السياق` (context window) |
-| `استدعاء الوظيفة` (calling the job) | `استدعاء الدوال` (function calling) |
-| `سلسلة الفكر` (chain of thought - literal) | `سلسلة التفكير` (chain of thinking) |
-| `لوحة الخدش` (scratching board) | `مسودة` (draft) |
+| English source | Calque (AI default) | Natural Arabic |
+|---|---|---|
+| workflow | `خط أنابيب` (literal "line of pipes") | `سير العمل` |
+| data pipeline | `خط أنابيب` | `خط بيانات` / `تدفق البيانات` |
+| multi-agent system | `نظام متعدد العملاء` (wrong sense — `عميل` ambiguously means client/customer; AI defaults to "client" when the intended sense is "agent") | `نظام متعدد الوكلاء` |
+| context window | `نافذة المحتوى` (content window) | `نافذة السياق` |
+| function calling | `استدعاء الوظيفة` (calling the job position) | `استدعاء الدوال` (functions, plural) |
+| chain of thought | `سلسلة الفكر` (literal singular "thought") | `سلسلة التفكير` (the verbal-noun form Arabic tech writing prefers) |
+| scratchpad | `لوحة الخدش` (literal "scratching board") | `مسودة` (draft — semantically narrower than English "scratchpad" but is the established Arabic term) |
+| prompt | `برومبت` (transliteration) | `موجِّه` (the canonical natural form per the humanizer dictionary, 118 corpus hits) |
 
-The full 340-entry dictionary lives in `arabic-ai-text-humanizer/corpus/calque-dictionary.json` — the APEX skill can reference it for Arabic-specialty work without duplicating it.
+The full 340-entry dictionary lives in `arabic-ai-text-humanizer/corpus/calque-dictionary.json` — the APEX skill cross-references it as the source of truth. When this table and the dictionary disagree, **the dictionary wins** — that's the canonical artifact.
 
 ## Worked example
 

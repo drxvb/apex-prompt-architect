@@ -17,7 +17,7 @@ Apply the APEX 4D method with these Arabic-specific additions:
 - Are all section headers in Arabic (not mixed with English)?
 - Does numbering use Arabic-Indic (`١٢٣`) or Western (`123`) — consistent throughout?
 - Does the prompt avoid kashida (`ـ`) and em-dashes (`—`) in body text?
-- Are AI-translation calques replaced with natural Arabic? (`خط أنابيب` → `مسار عمل`، `نظام متعدد العملاء` → `نظام متعدد الوكلاء`، `نافذة المحتوى` → `نافذة السياق`)
+- Are AI-translation calques replaced with natural Arabic? Example fixes (canonical list in `references/09-arabic-prompt-conventions.md`, source of truth is `arabic-ai-text-humanizer/corpus/calque-dictionary.json`): workflow `خط أنابيب` → `سير العمل`; data pipeline `خط أنابيب` → `خط بيانات`; multi-agent `نظام متعدد العملاء` → `نظام متعدد الوكلاء`; context window `نافذة المحتوى` → `نافذة السياق`.
 
 **D3 — Develop**: apply standard prompt-engineering fixes + Arabic typography:
 - Strip kashida from any pasted text
