@@ -1,0 +1,12 @@
+{
+  "_note": "Fragility cases are encoded as Python assertions in test_known_fragility.py, not data-driven from JSON. This file exists as a placeholder for future expansion when cases become large enough to externalize.",
+  "categories": [
+    "empty-input",
+    "language-detection",
+    "platform-detection",
+    "checklist-count",
+    "template-fidelity",
+    "constraint-preservation",
+    "safety-flag-injection"
+  ]
+}

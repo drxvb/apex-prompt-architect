@@ -1,0 +1,50 @@
+{
+  "_comment": "Copy to config.json and edit for your provider. Or set LLM_API_URL / LLM_API_KEY / LLM_MODEL as env vars and skip this file entirely.",
+  "_default_target_platform": "claude",
+  "_default_mode": "standard",
+  "providers": {
+    "anthropic_via_proxy": {
+      "LLM_API_URL": "https://api.anthropic.com/v1/messages",
+      "LLM_API_KEY": "sk-ant-...",
+      "LLM_MODEL": "claude-sonnet-4-6",
+      "temperature": 0
+    },
+    "openai": {
+      "LLM_API_URL": "https://api.openai.com/v1/chat/completions",
+      "LLM_API_KEY": "sk-...",
+      "LLM_MODEL": "gpt-4o-mini",
+      "temperature": 0
+    },
+    "moonshot_kimi": {
+      "LLM_API_URL": "https://api.moonshot.ai/v1/chat/completions",
+      "LLM_API_KEY": "sk-...",
+      "LLM_MODEL": "kimi-k2-0905-preview",
+      "temperature": 0
+    },
+    "minimax": {
+      "LLM_API_URL": "https://api.minimax.chat/v1/text/chatcompletion_v2",
+      "LLM_API_KEY": "...",
+      "LLM_MODEL": "MiniMax-Text-01",
+      "temperature": 0
+    },
+    "together": {
+      "LLM_API_URL": "https://api.together.xyz/v1/chat/completions",
+      "LLM_API_KEY": "...",
+      "LLM_MODEL": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+      "temperature": 0
+    },
+    "groq": {
+      "LLM_API_URL": "https://api.groq.com/openai/v1/chat/completions",
+      "LLM_API_KEY": "gsk_...",
+      "LLM_MODEL": "llama-3.3-70b-versatile",
+      "temperature": 0
+    },
+    "ollama_local": {
+      "LLM_API_URL": "http://localhost:11434/v1/chat/completions",
+      "LLM_API_KEY": "ollama",
+      "LLM_MODEL": "llama3.2",
+      "temperature": 0
+    }
+  },
+  "_note": "temperature=0 throughout: the D3 enrichment must be deterministic so the skill's output is reproducible."
+}

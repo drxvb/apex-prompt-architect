@@ -1,0 +1,72 @@
+[
+  {
+    "name": "vague-summarize-default-claude",
+    "input": "i need a prompt that summarizes scientific papers for me",
+    "platform": "claude",
+    "must_contain": ["Optimized Prompt", "Detailed prompt", "Compact prompt", "Quality check (12-point)"],
+    "must_not_contain": []
+  },
+  {
+    "name": "vague-summarize-kimi",
+    "input": "i need a prompt that summarizes scientific papers for me",
+    "platform": "kimi",
+    "must_contain": ["Optimized Prompt", "Target:** kimi", "Detailed prompt"],
+    "must_not_contain": []
+  },
+  {
+    "name": "vague-summarize-minimax",
+    "input": "i need a prompt that summarizes scientific papers for me",
+    "platform": "minimax",
+    "must_contain": ["Optimized Prompt", "Target:** minimax"],
+    "must_not_contain": []
+  },
+  {
+    "name": "arabic-input-stays-arabic-aware",
+    "input": "أريد برومبت يلخص الأوراق العلمية",
+    "platform": "claude",
+    "must_contain": ["Language:** ar"],
+    "must_not_contain": []
+  },
+  {
+    "name": "extract-task-detected",
+    "input": "extract key entities from these meeting notes",
+    "platform": "claude",
+    "must_contain": ["Extract"],
+    "must_not_contain": []
+  },
+  {
+    "name": "code-review-task-detected",
+    "input": "review this pull request for bugs",
+    "platform": "claude",
+    "must_contain": ["Analyze"],
+    "must_not_contain": []
+  },
+  {
+    "name": "executive-audience-detected",
+    "input": "summarize for executives only",
+    "platform": "claude",
+    "must_contain": ["executive"],
+    "must_not_contain": []
+  },
+  {
+    "name": "json-format-detected",
+    "input": "extract entities and return JSON",
+    "platform": "claude",
+    "must_contain": ["json"],
+    "must_not_contain": []
+  },
+  {
+    "name": "default-target-platform-claude",
+    "input": "write me a haiku",
+    "platform": "claude",
+    "must_contain": ["Target:** claude"],
+    "must_not_contain": []
+  },
+  {
+    "name": "kimi-platform-explicit",
+    "input": "write a system prompt for Kimi that does X",
+    "platform": "kimi",
+    "must_contain": ["Target:** kimi"],
+    "must_not_contain": []
+  }
+]

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+*.skill
+dist/
+.DS_Store
+Thumbs.db
+.env
+.env.local
+*.log
+.claude/
