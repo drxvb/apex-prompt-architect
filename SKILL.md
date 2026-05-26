@@ -1,13 +1,13 @@
 ---
 name: apex-prompt-architect
-description: APEX Prompt Architect — a multi-platform prompt-engineering skill that transforms rough ideas, vague instructions, or weak first-draft prompts into production-quality prompts optimized for Claude, Kimi, or MiniMax. Applies the APEX 4D method (Deconstruct → Diagnose → Develop → Deliver), runs a 12-point quality checklist, and emits both a detailed and a compact version of the result. Triggers on "improve my prompt", "rewrite this prompt", "make this prompt better", "optimize prompt for <platform>", "prompt for Claude/Kimi/MiniMax", "APEX prompt", "prompt engineering help", "create a system prompt for X", "polish my system prompt". Do NOT use for generating end-product content directly (write the deliverable instead), debugging running LLM application code, evaluating model outputs without a prompt under review, or platforms outside {Claude, Kimi, MiniMax} — use a platform-native tool there.
+description: APEX Prompt Architect — a multi-platform prompt-engineering skill that transforms rough ideas, vague instructions, or weak first-draft prompts into production-quality prompts optimized for Claude, Kimi, MiniMax, GPT, or Gemini. Applies the APEX 4D method (Deconstruct → Diagnose → Develop → Deliver), runs a 12-point quality checklist, and emits both a detailed and a compact version of the result. Triggers on "improve my prompt", "rewrite this prompt", "make this prompt better", "optimize prompt for Claude", "optimize prompt for Kimi", "optimize prompt for MiniMax", "optimize prompt for GPT", "optimize prompt for Gemini", "APEX prompt", "prompt engineering help", "create a system prompt", "polish my system prompt". Do NOT use for generating end-product content directly (write the deliverable instead), debugging running LLM application code, evaluating model outputs without a prompt under review, or platforms outside Claude, Kimi, MiniMax, GPT, Gemini — use a platform-native tool there.
 ---
 
 # APEX Prompt Architect — Multi-Platform Prompt Engineering
 
 ## Mission
 
-You transform a user's rough prompt into a production-quality prompt for one of three supported platforms. The skill is provider-agnostic for *analysis* but **platform-aware for the final output** — the same rough input produces three different optimized prompts depending on target.
+You transform a user's rough prompt into a production-quality prompt for one of five supported platforms. The skill is provider-agnostic for *analysis* but **platform-aware for the final output** — the same rough input produces five different optimized prompts depending on target.
 
 **Default target is Claude** when the user doesn't specify. Always state the default in the output so the user can redirect.
 
@@ -18,6 +18,8 @@ You transform a user's rough prompt into a production-quality prompt for one of 
 | **Claude** (default) | Reflective reasoning · long context · safety-aware · analytical depth | `templates/for-claude.md` |
 | **Kimi** | Long-document handling · clear task decomposition · step-by-step · concise-but-complete | `templates/for-kimi.md` |
 | **MiniMax** | Fast execution · tight instructions · direct output · minimal ambiguity | `templates/for-minimax.md` |
+| **GPT** | Tool-call discipline · JSON-mode reliability · structured outputs · system-role weight | `templates/for-gpt.md` |
+| **Gemini** | Multimodal grounding · safety-tier awareness · concise system instructions · grounded citations | `templates/for-gemini.md` |
 
 ## Operating modes
 
@@ -25,7 +27,7 @@ You transform a user's rough prompt into a production-quality prompt for one of 
 |---|---|---|
 | `quick` | Rough prompt is ≥80% complete; user just wants polish | Refined prompt only — no analysis surfaced |
 | `standard` (default) | Normal case — rough prompt needs structuring + platform tuning | Detailed + Compact + Assumptions + Quality check |
-| `deep` | User asks for thorough redesign, intent unclear, OR multi-platform compare | Full 4D walkthrough + 3 variants + risk analysis + worked example |
+| `deep` | User asks for thorough redesign, intent unclear, OR multi-platform compare | Full 4D walkthrough + N variants + risk analysis + worked example |
 
 Trigger keywords: `quick polish` → `quick`; `deep redesign` / `compare platforms` → `deep`; otherwise `standard`.
 
@@ -126,11 +128,27 @@ Emit:
 - Avoid deep CoT scaffolds — MiniMax shines at direct execution, not multi-step reflection
 - Default reasoning style: direct, decisive, no hedging
 
+### GPT
+- System message carries strong weight — put role, constraints, and refusal policy there
+- Excels at function-calling / structured outputs — when output is structured, specify JSON schema explicitly and recommend `response_format: json_object` or a named tool call
+- Markdown for structure (headers, bullets); XML tolerated but not native
+- Long-context: restate the question AFTER the context, not before
+- Reasoning models (o1, o3, o-series): drop CoT scaffolds — the model already reasons; state goal + constraints, leave reasoning method open
+- Default reasoning style: balanced; explicit `Let's think step by step` works on non-reasoning variants
+
+### Gemini
+- System instructions go in a dedicated field (`systemInstruction`); keep them tight (300–800 words is the sweet spot)
+- Multimodal-native — when input includes images/video/audio, reference modalities by name ("In the attached image…", "From minute 2:30 of the video…")
+- Safety-tier-aware — for borderline-but-legitimate content (medical, security research, mature fiction, theology), state the legitimate purpose explicitly in the system instruction
+- Grounding via Google Search is a first-class feature — when factuality matters, instruct the model to ground claims and cite
+- Prefer numbered steps + concrete examples over abstract instructions
+- Default reasoning style: practical, citation-friendly, slightly more conservative than Claude on edge cases
+
 ## Output format (Standard mode — default)
 
 ```markdown
 # Optimized Prompt — <task title>
-**Target:** <claude | kimi | minimax> · **Mode:** standard · **Language:** <en | ar | ...>
+**Target:** <claude | kimi | minimax | gpt | gemini> · **Mode:** standard · **Language:** <en | ar | ...>
 
 ## Detailed prompt
 <multi-section prompt: role, context, instructions, format, examples, verification>
@@ -166,7 +184,7 @@ Emit:
 Load on demand only:
 - `references/01-apex-4d-method.md` — deeper dive into each D
 - `references/02-prompt-anatomy.md` — 8 components of a strong prompt
-- `references/03-platform-adaptation.md` — full per-platform tuning matrix
+- `references/03-platform-adaptation.md` — full per-platform tuning matrix (all 5 platforms)
 - `references/04-prompt-patterns.md` — few-shot, CoT, ReAct, tree-of-thought, self-consistency
 - `references/05-anti-patterns.md` — under-specification, role drift, format leak, etc.
 - `references/06-clarification-heuristics.md` — when to ask vs. when to assume
@@ -204,11 +222,12 @@ This skill ships with 10 ready-made prompts you can grab and adapt. Each lives i
 | `chain-of-thought-scaffolder` | Add CoT reasoning scaffolds to reasoning-heavy tasks |
 | `boundary-setter` | Add "Do NOT do X" guardrails to an over-broad prompt |
 | `arabic-prompt-optimizer` | Apply APEX 4D to an Arabic-language prompt with MSA register awareness |
-| `multi-platform-comparator` | Render the same intent across Claude / Kimi / MiniMax side by side |
+| `multi-platform-comparator` | Render the same intent across all 5 target platforms side by side |
 
 ## Version history
 
 | Tag | Highlight |
 |---|---|
-| **v1.0.1** | Patch — multi-agent review fixes: (a) D2→D3 `fix_targets` now actually influences output (was dead code) via `apply_template_with_fixes`; (b) credential-detection regex set added to `validate_prompt` + `run_4d` refuses on detection (safety rule was previously aspirational); (c) Arabic flagship calque corrected (`خط أنابيب → سير العمل` for workflow-sense; `خط بيانات` for data-pipeline-sense; cross-references the humanizer's 340-entry dictionary as source of truth); (d) polite-imperative address-form slot corrected (was inverted — `يُرجى` belongs in output, not prompts); (e) `نظام متعدد العملاء` gloss corrected to flag the agent/client ambiguity; (f) production-script UTF-8 reconfigure (Windows console crash fix); (g) path-traversal warning for `--input`; (h) `domain="unspecified"` no longer ships in every Claude output; (i) `prompt → موجِّه` calque added to canonical Arabic list. T1.2 (brace-injection) was investigated — Python `.format()` substitutes values verbatim and does NOT re-process them; no fix needed, but T7 regression test now enforces the passthrough contract. Fragility suite expanded from 8 to 22 assertions. |
+| **v1.1.0** | Minor — added GPT and Gemini as 4th and 5th target platforms. New `templates/for-gpt.md` and `templates/for-gemini.md` wrappers. `references/03-platform-adaptation.md` expanded from 3 to 5 platforms with full knobs / pitfalls / template skeletons per platform. `multi-platform-comparator` prompt now renders across 5 platforms. GPT/Gemini content originated from the Claude Desktop port (`apex-prompt-architect.skill` v1.0.2-port) and was merged back into the canonical PublicRepos via this release. Per-platform prompt variants (`prompts/<name>/for-<platform>.md`) for GPT and Gemini remain TODO for v1.1.1 — current prompts/ subdirs only ship Claude/Kimi/MiniMax variants. |
+| v1.0.1 | Patch — multi-agent review fixes: (a) D2→D3 `fix_targets` now actually influences output (was dead code) via `apply_template_with_fixes`; (b) credential-detection regex set added to `validate_prompt` + `run_4d` refuses on detection (safety rule was previously aspirational); (c) Arabic flagship calque corrected (`خط أنابيب → سير العمل` for workflow-sense; `خط بيانات` for data-pipeline-sense; cross-references the humanizer's 340-entry dictionary as source of truth); (d) polite-imperative address-form slot corrected (was inverted — `يُرجى` belongs in output, not prompts); (e) `نظام متعدد العملاء` gloss corrected to flag the agent/client ambiguity; (f) production-script UTF-8 reconfigure (Windows console crash fix); (g) path-traversal warning for `--input`; (h) `domain="unspecified"` no longer ships in every Claude output; (i) `prompt → موجِّه` calque added to canonical Arabic list. T1.2 (brace-injection) was investigated — Python `.format()` substitutes values verbatim and does NOT re-process them; no fix needed, but T7 regression test now enforces the passthrough contract. Fragility suite expanded from 8 to 22 assertions. |
 | v1.0.0 | Initial release — APEX 4D method, 3 platforms (Claude, Kimi, MiniMax), 10 starter prompts, 12-point checklist, Arabic-specialty path. |
